@@ -4,15 +4,24 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/yimialmonte/gin-rest-api/controller"
+	"github.com/yimialmonte/gin-rest-api/service"
+)
+
+var (
+	videoService    service.VideoService       = service.New()
+	videoController controller.VideoController = controller.New(videoService)
 )
 
 func main() {
 	server := gin.Default()
 
-	server.GET("/test", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": "OK",
-		})
+	server.GET("/videos", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, videoController.FindAll())
+	})
+
+	server.POST("/videos", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusCreated, videoController.Save(ctx))
 	})
 
 	server.Run(":8080")
