@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	gindump "github.com/tpkeeper/gin-dump"
 	"github.com/yimialmonte/gin-rest-api/controller"
 	"github.com/yimialmonte/gin-rest-api/middlewares"
 	"github.com/yimialmonte/gin-rest-api/service"
@@ -25,7 +26,12 @@ func main() {
 	setupLogOutput()
 	server := gin.New()
 
-	server.Use(gin.Recovery(), middlewares.Logger())
+	server.Use(
+		gin.Recovery(),
+		middlewares.Logger(),
+		middlewares.BasicAuth(),
+		gindump.Dump(),
+	)
 
 	server.GET("/videos", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, videoController.FindAll())
